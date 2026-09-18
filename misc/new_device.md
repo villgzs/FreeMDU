@@ -61,3 +61,113 @@ intf.unlock_full_access(0xYYYY).await?;   // ← ide a full access key
 - A két sor, ahol `unlock_read_access` és `unlock_full_access` van hívva.
 
 Utána mentés + újrafordítás, és próbáld újra a `dump_memory`-t.
+
+A figyelmeztetés (**unused import**) önmagában nem hiba, csak warning. A program lefordul, de a 1494-es ID még mindig nem lesz felismerve, amíg a modul nincs megfelelően regisztrálva.
+
+### Mit kell még megcsinálnod?
+
+1. **Nyisd meg a `src/device/mod.rs` fájlt** (ez a szülőmodul).
+
+2. **Add hozzá az új modul deklarációt** a többihez hasonlóan:
+
+```rust
+mod id1494;
+```
+
+3. **A `connect` (vagy hasonló) függvényben** add hozzá a 1494-es esetet a match-hez.  
+   Általában valami ilyesmi van ott:
+
+```rust
+match id {
+    id419::compatible_software_ids!() => id419::WashingMachine::initialize(...).await,
+    // ... többi ID ...
+    id1494::compatible_software_ids!() => id1494::WashingMachine::initialize(intf, id).await,  // ← ezt add hozzá
+    _ => Err(Error::UnknownSoftwareId(id)),
+}
+```
+
+4. **A `id1494.rs` fájlban** a 26. sor (`pub(super) use compatible_software_ids;`) megmaradhat – ez a re-export a szülőmodul számára. A warning azért jön, mert a fájlon belül nem használod közvetlenül, de a szülőnek kell.
+
+### Gyors ellenőrzés
+A `id1494.rs` elején legyen ez (a 419-esről másolva):
+
+```rust
+macro_rules! compatible_software_ids {
+    () => {
+        1494
+    };
+}
+pub(super) use compatible_software_ids;
+```
+
+És az `initialize`-ben a saját kulcsaid:
+
+```rust
+intf.unlock_read_access(0xXXXX).await?;  // a te read key-ed
+intf.unlock_full_access(0xYYYY).await?;  // a te full key-ed
+```
+
+Ha elküldöd a `src/device/mod.rs` releváns részét (a `mod` deklarációkat és a `match` részt), pontosan megírom, mit kell beírni.
+
+A fájlstruktúrád alapján pontosan ezt kell tenned:
+
+### 1. Nyisd meg a `device.rs` fájlt
+
+Add hozzá a modul deklarációt a többi `pub mod` sor közé:
+
+```rust
+pub mod id1494;
+```
+
+(pl. a `pub mod id419;` után)
+
+### 2. A `connect` függvény `match` ágába is add hozzá
+
+Keresd meg ezt a részt:
+
+```rust
+match id {
+    id218::compatible_software_ids!() => { ... }
+    ...
+    id2895::compatible_software_ids!() => { ... }
+    _ => Err(Error::UnknownSoftwareId(id)),
+}
+```
+
+És szúrd be a 1494-es ágat a `_` elé:
+
+```rust
+id1494::compatible_software_ids!() => {
+    Ok(Box::new(id1494::WashingMachine::initialize(intf, id).await?) as Box<dyn Device<P>>)
+}
+```
+
+### 3. Ellenőrizd az `id1494.rs` fájlt
+
+- A makró legyen 1494:
+
+```rust
+macro_rules! compatible_software_ids {
+    () => {
+        1494
+    };
+}
+pub(super) use compatible_software_ids;
+```
+
+- Az `initialize` függvényben legyenek a saját kulcsaid:
+
+```rust
+intf.unlock_read_access(0xXXXX).await?;  // a te read key-ed
+intf.unlock_full_access(0xYYYY).await?;  // a te full key-ed
+```
+
+### 4. Fordítsd újra
+
+```bash
+cargo run --all-features --bin dump_memory
+```
+
+A warning (`unused import`) el fog tűnni, amint a `device.rs`-ben használod a `compatible_software_ids!()` makrót.
+
+Ha a kulcsokat még nem írtad be, vagy a struktúra neve nem `WashingMachine` (hanem pl. `TumbleDryer`), szólj, és igazítjuk.
