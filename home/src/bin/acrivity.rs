@@ -77,11 +77,11 @@ async fn main(spawner: embassy_executor::Spawner) {
         let level =
         (gpios.in_().read().bits() & (1 << TESTED_RX_PIN)) != 0;
 
-        // GPIO10 kövesse az RX állapotát
+        // GPIO10 invertálva követi az RX állapotát
         if level {
-            gpio10.set_high();
-        } else {
             gpio10.set_low();
+        } else {
+            gpio10.set_high();
         }
 
         // 1 másodperces impulzusgenerátor
