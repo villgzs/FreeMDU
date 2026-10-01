@@ -127,7 +127,7 @@ docker run -dit \
     -w "$WORKDIR" \
     --device=/dev/ttyACM0 \
     "$IMAGE" \
-    bash >/dev/null
+    bash >/dev/null || bash -c "bash ./$0 -o delete"
 
 docker exec -w /usr/src/myapp/home "$CONTAINER_NAME" bash /usr/src/myapp/home/generate_compilescripts.sh
 
