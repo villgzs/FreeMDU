@@ -29,7 +29,10 @@ if ! command -v docker &>/dev/null; then
     exit 1
 fi
 
-CONTAINER_NAME="rust-dev"
+LOCALDIR=${PWD#/}
+LOCALDIR=${LOCALDIR//\//-}
+
+CONTAINER_NAME="rust-dev-$LOCALDIR"
 IMAGE="rust:latest"
 WORKDIR="/usr/src/myapp"
 
