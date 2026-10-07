@@ -1,6 +1,6 @@
 # Transmitter design with LM358
 
-Transmission at 38400 baud (far from 2400 baud):
+Transmission at 38400 baud without error (far from 2400 baud):
 
 ![38400baud](38400baud.jpg)
 
