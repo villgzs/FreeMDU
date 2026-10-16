@@ -261,3 +261,262 @@ A következő lépés a `Command::SetBaudRate` és a `query_max_baud_rate()` kon
 
 ----
 
+Itt a teljes, kész kód a megbeszélt logikával.
+
+### 1. `home/src/lib.rs` – OpticalPort bővítése
+
+A meglévő fájl végére (vagy az `impl OpticalPort` blokkba) add hozzá ezt:
+
+```rust
+impl OpticalPort<'_> {
+    /// Átállítja az optikai UART baud-sebességét.
+    /// Figyelem: ne hívd, amíg adás folyamatban van (előtte flush).
+    pub fn set_baudrate(&mut self, baud: u32) -> Result<(), ConfigError> {
+        let cfg = Config::default()
+            .with_baudrate(baud)
+            .with_parity(Parity::Even);
+
+        self.0.apply_config(&cfg)
+    }
+}
+```
+
+A fájl tetején már megvan a szükséges import (`Config`, `ConfigError`, `Parity`).
+
+### 2. Teljes `home/src/bin/bridge.rs`
+
+```rust
+#![no_std]
+#![no_main]
+
+use core::panic::PanicInfo;
+use embassy_executor::Spawner;
+use embassy_futures::select::{self, Either};
+use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, signal::Signal};
+use embassy_time::{Duration, Instant, Timer};
+use embedded_io_async::{Read, Write};
+use esp_alloc as _;
+use esp_hal::{
+    Async, Config, gpio::Output, interrupt::software::SoftwareInterruptControl,
+    timer::timg::TimerGroup, usb_serial_jtag::UsbSerialJtag,
+};
+use freemdu_home::OpticalPort;
+
+// Buffer size for USB serial and optical port reads
+const BUF_SIZE: usize = 32;
+
+// Minimum LED on-time after each transmission
+const LED_MIN_ON_DURATION: Duration = Duration::from_millis(10);
+
+// Protocol locks after ~3 s of inactivity → we use a slightly longer timeout
+const IDLE_TIMEOUT: Duration = Duration::from_millis(4000);
+
+static LED_SIGNAL: Signal<CriticalSectionRawMutex, ()> = Signal::new();
+
+esp_bootloader_esp_idf::esp_app_desc!();
+
+#[panic_handler]
+fn panic(_: &PanicInfo) -> ! {
+    loop {}
+}
+
+#[embassy_executor::task]
+async fn led_task(mut led: Output<'static>) -> ! {
+    loop {
+        match embassy_time::with_timeout(LED_MIN_ON_DURATION, LED_SIGNAL.wait()).await {
+            Ok(()) => led.set_low(),
+            Err(_) => led.set_high(),
+        }
+    }
+}
+
+/// Bridge state machine
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum BridgeState {
+    /// Basic state – only here can a new handshake start
+    Idle2400,
+    /// Saw software-id query + unlock → waiting for possible baud negotiation
+    Handshake,
+    /// set_baud command sent, waiting for Success (0x00) from slave
+    WaitingOk { target: u32 },
+    /// Successfully switched to higher speed – further baud changes forbidden
+    HighSpeed,
+    /// Unlock happened but no baud negotiation → stay at 2400, no more changes
+    Locked2400,
+}
+
+impl BridgeState {
+    fn is_monitoring(self) -> bool {
+        matches!(self, BridgeState::Idle2400 | BridgeState::Handshake)
+    }
+}
+
+/// Very simple detector for the short set-baud request frames.
+/// Request format: [cmd, param_lo, param_hi, len, checksum]
+fn detect_set_baud(data: &[u8]) -> Option<u32> {
+    if data.len() < 5 {
+        return None;
+    }
+
+    match data[0] {
+        0x46 => Some(2400), // SetBaudRate2400
+        0x47 => Some(9600), // SetBaudRate9600
+        0x4b => {
+            // SetBaudRate (newer devices) – param is the BaudRate enum value
+            match data[1] {
+                0 => Some(2400),
+                1 => Some(9600),
+                2 => Some(19200),
+                3 => Some(38400),
+                4 => Some(57600),
+                5 => Some(76800),
+                6 => Some(115_200),
+                _ => None,
+            }
+        }
+        _ => None,
+    }
+}
+
+/// Detects the beginning of a new connection (software-id query)
+fn is_software_id_query(data: &[u8]) -> bool {
+    data.len() >= 5 && data[0] == 0x11
+}
+
+/// Detects any unlock command
+fn is_unlock(data: &[u8]) -> bool {
+    data.len() >= 5 && matches!(data[0], 0x20 | 0x21 | 0x32)
+}
+
+#[embassy_executor::task]
+async fn bridge_task(
+    mut serial: UsbSerialJtag<'static, Async>,
+    mut opt: OpticalPort<'static>,
+) -> ! {
+    let mut serial_buf = [0u8; BUF_SIZE];
+    let mut opt_buf = [0u8; BUF_SIZE];
+
+    let mut state = BridgeState::Idle2400;
+    let mut last_activity = Instant::now();
+
+    loop {
+        // ----- Idle timeout handling -----
+        if last_activity.elapsed() >= IDLE_TIMEOUT {
+            if state != BridgeState::Idle2400 {
+                // Always fall back to 2400 after timeout
+                let _ = opt.set_baudrate(2400);
+                state = BridgeState::Idle2400;
+            }
+            last_activity = Instant::now();
+        }
+
+        // Small timeout so we can periodically check the idle timer
+        let read_timeout = Duration::from_millis(50);
+
+        match select::select(
+            embassy_time::with_timeout(read_timeout, serial.read(&mut serial_buf)),
+            embassy_time::with_timeout(read_timeout, opt.read(&mut opt_buf)),
+        )
+        .await
+        {
+            // ===== Host → Optical =====
+            Either::First(Ok(Ok(len))) => {
+                last_activity = Instant::now();
+                let data = &serial_buf[..len];
+
+                match state {
+                    BridgeState::Idle2400 => {
+                        if is_software_id_query(data) {
+                            state = BridgeState::Handshake;
+                        }
+                        // forward everything
+                        let _ = opt.write(data).await;
+                    }
+
+                    BridgeState::Handshake => {
+                        if is_unlock(data) {
+                            // still in handshake, just remember we saw unlock
+                            // (we stay in Handshake)
+                        } else if let Some(target) = detect_set_baud(data) {
+                            // Baud change only accepted during handshake
+                            let _ = opt.write(data).await;
+                            state = BridgeState::WaitingOk { target };
+                            LED_SIGNAL.signal(());
+                            continue;
+                        } else {
+                            // Any other command after unlock → lock at 2400
+                            // (no more baud changes until next timeout)
+                            state = BridgeState::Locked2400;
+                        }
+                        let _ = opt.write(data).await;
+                    }
+
+                    // HighSpeed / Locked2400 / WaitingOk → pure forward, no more baud logic
+                    _ => {
+                        let _ = opt.write(data).await;
+                    }
+                }
+
+                LED_SIGNAL.signal(());
+            }
+
+            // ===== Optical → Host =====
+            Either::Second(Ok(Ok(len))) => {
+                last_activity = Instant::now();
+                let data = &opt_buf[..len];
+
+                if let BridgeState::WaitingOk { target } = state {
+                    // Looking for the Success response code (0x00)
+                    if data.iter().any(|&b| b == 0x00) {
+                        if let Ok(()) = opt.set_baudrate(target) {
+                            state = if target == 2400 {
+                                BridgeState::Idle2400
+                            } else {
+                                BridgeState::HighSpeed
+                            };
+                        } else {
+                            // Failed to change baud → stay safe at 2400
+                            let _ = opt.set_baudrate(2400);
+                            state = BridgeState::Idle2400;
+                        }
+                    }
+                }
+
+                let _ = Write::write(&mut serial, data).await;
+            }
+
+            // Timeout or error → just continue (idle timer will handle the rest)
+            _ => {}
+        }
+    }
+}
+
+#[esp_rtos::main]
+async fn main(spawner: Spawner) {
+    let peripherals = esp_hal::init(Config::default());
+    let timg0 = TimerGroup::new(peripherals.TIMG0);
+    let sw_int = SoftwareInterruptControl::new(peripherals.SW_INTERRUPT);
+
+    esp_rtos::start(timg0.timer0, sw_int.software_interrupt0);
+
+    let led = freemdu_home::new_status_led();
+    let serial = UsbSerialJtag::new(peripherals.USB_DEVICE).into_async();
+    let opt = freemdu_home::new_optical_port(peripherals.UART1).unwrap();
+
+    spawner.spawn(led_task(led).unwrap());
+    spawner.spawn(bridge_task(serial, opt).unwrap());
+}
+```
+
+### Rövid magyarázat a működéshez
+
+- **Idle2400** → csak itt kezdődhet új handshake (`0x11`).
+- **Handshake** → láttuk az ID-t + unlock-ot. Csak ebben az állapotban fogadjuk el a `set_baud` parancsot.
+- Ha az unlock után **nem** jön baud-parancs (vagy más parancs jön), átmegyünk **Locked2400**-ba → többé nincs váltás.
+- **WaitingOk** → megvárjuk a slave `0x00` (Success) válaszát, **azután** állítjuk át az optikai UART-ot.
+- **HighSpeed** → sikeres magasabb sebesség, további baud-váltás tiltva.
+- Bármilyen állapotból **~4 s inaktivitás** után visszaállunk **Idle2400** + 2400 baud-ra.
+
+A detektor szándékosan egyszerű (rövid frame-eket néz). Ha a gyakorlatban chunkolás miatt problémák adódnak, később finomítható egy kis sliding bufferrel.
+
+Próbáld ki, és ha valami nem stimmel a valódi forgalomnál, szólj, finomhangoljuk.
