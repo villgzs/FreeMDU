@@ -2,6 +2,9 @@
 git remote add felix-albrecht https://github.com/felix-albrecht/FreeMDU.git
 ```
 ```
+git remote add bubenkoff https://github.com/bubenkoff/FreeMDU.git
+```
+```
 git fetch felix-albrecht
 ```
 ```
