@@ -62,3 +62,34 @@ GitHub
 
 
 Egy fontos pontosítás: a timeout értékét ne találjuk ki, hanem a FreeMDU protokollban már használt időkorlátot vegyük át. Így a bridge és a host ugyanazt a kapcsolat-élettartamot fogja követni.
+
+---
+
+Ez már elegendő ahhoz, hogy a bridge-ben felismerhető protokollparancsokra építsük a baud rate-váltást. Különösen fontos a két parancs:
+
+- `QueryMaxBaudRate = 0x38` – a maximális sebesség lekérdezése.
+- `SetBaudRate = 0x4b` – az újabb készülékek sebességbeállító parancsa.
+
+A régebbi parancsok (`SetBaudRate2400 = 0x46` és `SetBaudRate9600 = 0x47`) miatt a bridge-nek a régi protokollváltozatot is figyelembe kell vennie.
+
+## Javasolt bridge-logika
+
+| Állapot               | Felismert esemény                | Teendő                                         |
+| --------------------- | -------------------------------- | ---------------------------------------------- |
+| `Idle2400`            | `QuerySoftwareId` (`0x11`)       | Kapcsolatfelépítés követése                    |
+| `Negotiating`         | `UnlockSmartHomeAccess` (`0x21`) | Feloldási szakasz                              |
+| `Negotiating`         | `QueryMaxBaudRate` (`0x38`)      | A válasz figyelése                             |
+| `Negotiating`         | Érvényes `SetBaudRate` (`0x4b`)  | Új sebesség alkalmazása                        |
+| `ConnectedFast`       | Újabb baud-parancs               | Figyelmen kívül hagyás, változatlan továbbítás |
+| Bármely aktív állapot | Forgalommentes timeout           | Visszaállás 2400 baudra                        |
+
+Fontos: a `0x4b` parancskód önmagában nem feltétlenül tartalmazza a sebességet; a parancs paramétereit és keretezését is meg kell vizsgálni a `protocol` implementációban. Ugyanígy a `0x38` válaszának formátuma is szükséges ahhoz, hogy helyesen lehessen ellenőrizni a maximális támogatott sebességet.
+
+A bridge-nek az eredeti bájtokat változtatás nélkül kell továbbítania. A parancsfelismerés csak a belső állapotot módosíthatja, nem nyelheti el és nem alakíthatja át a protokollüzeneteket.
+
+A timeout pillanatában az UART-ot 2400-ra kell állítani, és újra engedélyezni a sebességegyeztetést. Így minden új kapcsolat az alapértelmezett sebességgel indul.
+
+A következő lépés a `Command::SetBaudRate` és a `query_max_baud_rate()` konkrét implementációjának áttekintése. Ezekből már pontosan megadható a parancs felismerése, a sebesség paraméterének dekódolása és az UART biztonságos átállításának helye.
+
+----
+
