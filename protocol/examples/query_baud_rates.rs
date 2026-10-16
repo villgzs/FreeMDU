@@ -5,41 +5,44 @@ use std::error::Error;
 async fn main() -> Result<(), Box<dyn Error>> {
     env_logger::init();
 
-    let mut port = freemdu::serial::open("/dev/ttyACM0")?;
+    let port = freemdu::serial::open("/dev/ttyACM0")?;
     let mut intf = Interface::new(port);
 
-    // Kötelező első lépés
     let software_id = intf.query_software_id().await?;
     println!("Software ID: {software_id}");
 
-    // A query_max_baud_rate újabb eszközökön unlock_read_access
-    // vagy unlock_smart_home_access után érhető el.
-    // Próbáljuk először a smart home unlock-ot (kulcs nélküli),
-    // ha az nem megy, esünk vissza a klasszikus read unlock-ra.
-    // (A read unlock-hoz eszköz-specifikus kulcs kellene – itt
-    // a device::connect-et használjuk, ha van támogatott ID.)
+    // 1. próbálkozás: smart-home unlock (kulcs nélküli, újabb eszközök)
+    match intf.unlock_smart_home_access().await {
+        Ok(()) => {
+            match intf.query_max_baud_rate().await {
+                Ok(max) => {
+                    print_supported_rates(max);
+                    return Ok(());
+                }
+                Err(e) => {
+                    eprintln!("query_max_baud_rate failed after smart-home unlock: {e}");
+                }
+            }
+        }
+        Err(e) => {
+            eprintln!("smart-home unlock failed: {e}");
+        }
+    }
 
-    match try_query_via_smart_home(&mut intf).await {
+    // 2. próbálkozás: támogatott eszköz esetén device::connect
+    println!("Falling back to device::connect…");
+    let mut port = freemdu::serial::open("/dev/ttyACM0")?;
+    let mut dev = freemdu::device::connect(&mut port).await?;
+
+    match dev.interface().query_max_baud_rate().await {
         Ok(max) => print_supported_rates(max),
-        Err(_) => {
-            println!("Smart-home unlock failed, trying device::connect…");
-            // Újracsatlakozás a magasabb szintű API-val
-            let mut port = freemdu::serial::open("/dev/ttyACM0")?;
-            let mut dev = freemdu::device::connect(&mut port).await?;
-            let max = dev.interface().query_max_baud_rate().await?;
-            print_supported_rates(max);
+        Err(e) => {
+            eprintln!("query_max_baud_rate not supported on this device: {e}");
+            println!("This is normal on older appliances (only 2400 / possibly 9600 baud).");
         }
     }
 
     Ok(())
-}
-
-async fn try_query_via_smart_home(
-    intf: &mut Interface<impl freemdu::Read + freemdu::Write>,
-) -> Result<BaudRate, Box<dyn Error>> {
-    intf.unlock_smart_home_access().await?;
-    let max = intf.query_max_baud_rate().await?;
-    Ok(max)
 }
 
 fn print_supported_rates(max: BaudRate) {
@@ -58,13 +61,10 @@ fn print_supported_rates(max: BaudRate) {
     ];
 
     for rate in all {
-        let marker = if rate == max {
-            "  ← maximum"
-        } else if (rate as u8) <= (max as u8) {
-            ""
-        } else {
-            continue; // magasabb, mint a max → kihagyjuk
-        };
+        if (rate as u8) > (max as u8) {
+            continue;
+        }
+        let marker = if rate == max { "  ← maximum" } else { "" };
         println!("  {:>6} baud{}", rate.as_baud(), marker);
     }
 }
