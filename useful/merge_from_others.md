@@ -41,3 +41,9 @@ git merge felix-albrecht/protocol-features
 ```
 git push origin protocol-features
 ```
+---
+
+# Létrehoz egy új, saját nevű helyi ágat a távoli ág alapján
+```
+git switch -c sajat-esphome-nev bubenkoff/esphome
+```
