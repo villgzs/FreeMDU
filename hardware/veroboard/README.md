@@ -10,7 +10,7 @@ Transmission at 38400 baud without error (far from 2400 baud):
 
 ![VERO](ALL.png)
 
-In the schematic, R1 should be changed to 33k. 330k makes the ambient light sensitivity too high. The design above use different part names ( R1 <-> R4, R2 <-> R3, RV1 <-> RT1 )
+The design above use different part names ( R1 <-> R4, R2 <-> R3, RV1 <-> RT1 )
 
 ![receiver](receiver.png)
 
