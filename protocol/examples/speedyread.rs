@@ -48,7 +48,7 @@ async fn try_speedup(path: &str) -> Result<(Interface<Port>, BaudRate), Box<dyn 
     .await
     {
         Ok(Ok(swid)) => {
-            println!("ID(prop.2400): {:?}", swid);
+            println!("ID from timed query): {:?}", swid);
             println!("0-Software ID: {}", intf.query_software_id().await?);            
 //            tokio::time::sleep(std::time::Duration::from_millis(100)).await;            
         }
@@ -70,10 +70,11 @@ async fn try_speedup(path: &str) -> Result<(Interface<Port>, BaudRate), Box<dyn 
     .await
     {
         Ok(Ok(swid)) => {
-            println!("ID(prop.2400): {:?}", swid);
+            println!("ID from 2nd query: {:?}", swid);
             println!("1-Software ID: {}", intf.query_software_id().await?);            
             intf.unlock_read_access(0xbde7).await?;
             intf.unlock_full_access(0x902f).await?;
+//            intf.unlock_smart_home_access().await?;
             println!("|- Unlocked -|");
             println!("2-Software ID: {}", intf.query_software_id().await?);
  //           tokio::time::sleep(std::time::Duration::from_millis(100)).await;            
@@ -95,13 +96,14 @@ async fn try_speedup(path: &str) -> Result<(Interface<Port>, BaudRate), Box<dyn 
     if do_speed_change {
         match timeout(
             Duration::from_millis(100),
-            intf.set_baud_rate(BaudRate::Baud19200),
+            intf.set_baud_rate(BaudRate::Baud9600),
         )
         .await
         {
             Ok(Ok(())) => {
-                println!("Baudrate change to 9600 on device successfully.");
+                println!("Baudrate change to 19200 on device successfully.");
                 tokio::time::sleep(std::time::Duration::from_millis(200)).await;
+                println!("Tokio wait done.");
                 println!("3-Software ID: {}", intf.query_software_id().await?);            
                 intf.unlock_read_access(0xbde7).await?;
                 intf.unlock_full_access(0x902f).await?;
@@ -196,7 +198,7 @@ async fn try_speedup(path: &str) -> Result<(Interface<Port>, BaudRate), Box<dyn 
     // -----------------------------------------
     println!("~~~ BAUD RATE CHANGE AGAIN  ~~~");    
     
-    intf.set_baud_rate(BaudRate::Baud19200).await?;   
+    intf.set_baud_rate(BaudRate::Baud9600).await?;   
     tokio::time::sleep(std::time::Duration::from_millis(500)).await;
     
     // -----------------------------------------
@@ -246,7 +248,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     // 1) Próbáljunk felgyorsítani (újabb eszközökön)
     let mut intf = match try_speedup(path).await {
         Ok((intf, rate)) => {
-            println!("- Switched to {} baud", rate.as_baud());
+            println!("- Possible maximum is {} baud", rate.as_baud());
             intf
         }
         Err(e) => {
@@ -273,10 +275,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .open("memory_dump.bin")?;
 
     // Resume dumping process if previously interrupted
-    let start: u16 = file.seek(SeekFrom::End(0))?.try_into()?;
+    let start: u32 = file.seek(SeekFrom::End(0))?.try_into()?;
 
-    for addr in (start..=0xffff).step_by(0x80) {
-        println!("- Reading memory address {addr:04x}");
+    for addr in (start..=0x000fffff).step_by(0x80) {
+        println!("- Reading memory address {addr:08x}");
 
         let data: [u8; 0x80] = intf.read_memory(addr.into()).await?;
 

@@ -57,3 +57,7 @@ required-features = ["native-serial"]
 [[example]]
 name = "speedyread"
 required-features = ["native-serial"]
+
+[[example]]
+name = "speedyread19200"
+required-features = ["native-serial"]

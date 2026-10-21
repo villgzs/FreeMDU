@@ -111,7 +111,7 @@ async fn bridge_task(
 
 	    // 1. PC → Opt
 	    if let Ok(Ok(len)) = embassy_time::with_timeout(
-	        Duration::from_millis(5),
+	        Duration::from_micros(500),
 	        serial.read(&mut serial_buf)
 	    ).await {
 	        // feldolgozás + last_activity frissítés
@@ -122,7 +122,7 @@ async fn bridge_task(
 
                 if state == BridgeState::WaitLoop {
                    // if let Some(baud_rate) = detect_set_baud(&serial_buf[..len]) {
-                   if serial_buf[0] == 0x4b {                      
+                   if serial_buf[0] == 0x47 { // 0x4b                      
                       do_baud_change = true;
                       do_delay = Instant::now();
                    }                   
@@ -132,7 +132,7 @@ async fn bridge_task(
 
 	    // 2. Opt → PC
 	    if let Ok(Ok(len)) = embassy_time::with_timeout(
-	        Duration::from_millis(5),
+	        Duration::from_micros(500),
 	        opt.read(&mut opt_buf)
 	    ).await {
 	        let _ = Write::write(&mut serial, &opt_buf[..len]).await;
@@ -154,7 +154,7 @@ async fn bridge_task(
 	    if do_baud_change && ( do_delay.elapsed() >= DO_RETARD ) {
 
 	            let _ = opt.flush().await;
-                    let _ = opt.set_baudrate(19200); 
+                    let _ = opt.set_baudrate(9600); 
 	            state = BridgeState::LockedHiSpeed;
 	            
 	            do_baud_change = false;
@@ -162,7 +162,7 @@ async fn bridge_task(
 
 
 	    // Kis szünet, hogy ne pörögjön 100%-on
-	    embassy_time::Timer::after(Duration::from_millis(2)).await;                   
+	    embassy_time::Timer::after(Duration::from_micros(100)).await;                   
         
     }
 
