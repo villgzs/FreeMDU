@@ -49,3 +49,11 @@ required-features = ["native-serial"]
 [[example]]
 name = "Martinius"
 required-features = ["native-serial"]
+
+[[example]]
+name = "speed_keys"
+required-features = ["native-serial"]
+
+[[example]]
+name = "speedyread"
+required-features = ["native-serial"]

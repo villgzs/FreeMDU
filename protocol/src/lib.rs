@@ -694,7 +694,7 @@ impl<P: Read + Write> Interface<P> {
                     .await?;
 
                 // Device responds with actual baud rate
-                let _: u8 = self.receive().await?.into();
+                // let _: u8 = self.receive().await?.into();
 
                 Ok(())
             }

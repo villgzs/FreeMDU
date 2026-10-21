@@ -17,7 +17,7 @@ pub mod id419;
 pub mod id469;
 pub mod id517;
 pub mod id605;
-pub mod id629;
+pub mod id1494;
 pub(super) mod utils;
 
 use crate::{Error as ProtocolError, Interface, Read, Write};
@@ -463,8 +463,8 @@ pub async fn connect<'a, P: 'a + Read + Write>(
         id605::compatible_software_ids!() => {
             Ok(Box::new(id605::Dishwasher::initialize(intf, id).await?) as Box<dyn Device<P>>)
         }
-        id629::compatible_software_ids!() => {
-            Ok(Box::new(id629::WashingMachine::initialize(intf, id).await?) as Box<dyn Device<P>>)
+        id1494::compatible_software_ids!() => {
+            Ok(Box::new(id1494::WashingMachine::initialize(intf, id).await?) as Box<dyn Device<P>>)
         }
         id2088::compatible_software_ids!() => {
             Ok(Box::new(id2088::WashingMachine::initialize(intf, id).await?) as Box<dyn Device<P>>)
