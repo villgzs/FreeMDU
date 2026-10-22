@@ -2,3 +2,5 @@ target/
 internal/
 .vscode/
 .zed/
+esp32bridge/
+serialbridge/
