@@ -19,7 +19,7 @@ MQTT_PASSWORD = ""
 DEVICE_PUBLISH_INTERVAL = "60"
 
 [target.'cfg(target_arch = "riscv32")']
-runner = "espflash flash --monitor"
+runner = "espflash flash"
 rustflags = [
   # Required to obtain backtraces
   "-C", "force-frame-pointers",

@@ -14,6 +14,7 @@ use embedded_io_async::{Read, Write};
 use esp_hal::{
     timer::timg::TimerGroup,
     uart::{Config as UartConfig, Parity, Uart},
+    gpio::interconnect::{InputSignal, OutputSignal},
     usb::usb_serial_jtag::UsbSerialJtag,
     Async,
 };
@@ -105,15 +106,17 @@ async fn main(spawner: Spawner) {
 
     let usb = UsbSerialJtag::new(peripherals.USB_DEVICE).into_async();
     let (usb_rx, usb_tx) = usb.split();
-
+    
     let uart_config = UartConfig::default()
         .with_baudrate(UART_BAUD)
         .with_parity(Parity::Even);
 
     let uart = Uart::new(peripherals.UART1, uart_config)
         .unwrap()
-        .with_rx(peripherals.GPIO0)
-        .with_tx(peripherals.GPIO1)
+        // .with_rx(peripherals.GPIO0.peripheral_input().with_input_inverter(true))        
+        // .with_tx(peripherals.GPIO1.peripheral_output().with_output_inverter(true))     
+        .with_rx(InputSignal::from(peripherals.GPIO0).with_input_inverter(true))
+        .with_tx(OutputSignal::from(peripherals.GPIO1).with_output_inverter(true))
         .into_async();
 
     let (uart_rx, uart_tx) = uart.split();
