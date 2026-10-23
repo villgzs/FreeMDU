@@ -1,4 +1,4 @@
 Upload:
 ```
-cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge-suppressor
 ```
