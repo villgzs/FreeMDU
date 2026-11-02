@@ -2,6 +2,7 @@
       error::Error,
       fs::OpenOptions,
       io::{Seek, SeekFrom, Write},
+      time::Duration,
   };
   
   #[tokio::main]
@@ -33,6 +34,9 @@
           let data: [u8; 0x80] = intf.read_memory(addr.into()).await?;
   
           file.write_all(&data)?;
+          
+          // Kis szünet a következő olvasás előtt
+          // tokio::time::sleep(Duration::from_millis(100)).await;
       }
   
       Ok(())

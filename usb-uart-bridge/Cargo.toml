@@ -5,7 +5,7 @@ rust-version = "1.95"
 version      = "0.1.0"
 
 [[bin]]
-name = "usb-uart-bridge"
+name = "usb-uart-transparent-bridge"
 path = "./src/bin/main.rs"
 
 [[bin]]
@@ -15,6 +15,10 @@ path = "./src/bin/suppress.rs"
 [[bin]]
 name = "usb-uart-bridge-delayed"
 path = "./src/bin/delayed.rs"
+
+[[bin]]
+name = "usb-uart-bridge"
+path = "./src/bin/buffered.rs"
 
 
 [dependencies]

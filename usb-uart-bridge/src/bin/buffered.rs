@@ -5,28 +5,35 @@ esp_bootloader_esp_idf::esp_app_desc!();
 
 // use core::sync::atomic::{AtomicBool, Ordering};
 use core::sync::atomic::{AtomicU8, AtomicUsize, Ordering};
+use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, signal::Signal};
 use embassy_executor::Spawner;
 // use embassy_sync::{
 //    blocking_mutex::raw::CriticalSectionRawMutex,
 //    signal::Signal,
 // };
-use embassy_time::{Duration, Instant, Timer};
+use embassy_time::{Duration, Instant, Timer, TimeoutError};
 use embedded_io_async::{Read, Write};
 use esp_hal::{
     timer::timg::TimerGroup,
     uart::{Config as UartConfig, Parity, Uart},
-    gpio::interconnect::{InputSignal, OutputSignal},
+    gpio::{Output},
+    gpio::interconnect::{InputSignal, OutputSignal,},
     usb::usb_serial_jtag::UsbSerialJtag,
     Async,
 };
 use esp_backtrace as _;
+
+// Minimum LED on-time after each transmission
+const LED_MIN_ON_DURATION: Duration = Duration::from_millis(10);
+
+static LED_SIGNAL: Signal<CriticalSectionRawMutex, ()> = Signal::new();
 
 const BUFFER_SIZE: usize = 64;
 const UART_BAUD: u32 = 2400;
 
 /// Az UART → USB irányban alkalmazott késleltetés (ms).
 /// Állítsd a kívánt értékre.
-const DELAY_MS: u64 = 1;
+const DELAY_MS: u64 = 1000;
 
 /// Egy bejegyzés a körkörös bufferben
 struct TimedByte {
@@ -105,6 +112,15 @@ static CIRC_BUF: CircularBuffer = CircularBuffer::new();
 static GOOUT: AtomicU8 = AtomicU8::new(0);
 static COMEIN: AtomicU8 = AtomicU8::new(0);
 
+#[embassy_executor::task]
+async fn led_task(mut led: Output<'static>) -> ! {
+    loop {
+        match embassy_time::with_timeout(LED_MIN_ON_DURATION, LED_SIGNAL.wait()).await {
+            Ok(()) => led.set_low(),
+            Err(TimeoutError) => led.set_high(),
+        }
+    }
+}
 
 #[embassy_executor::task]
 async fn usb_to_uart_task(
@@ -168,25 +184,26 @@ async fn delayed_usb_tx_task(
 ) {
     loop {
         if let Some((data, timestamp)) = CIRC_BUF.peek() {
+            
+            LED_SIGNAL.signal(());
+            
             let elapsed = Instant::now().duration_since(timestamp);
 
-            if elapsed >= Duration::from_millis(DELAY_MS) {
+            if elapsed >= Duration::from_micros(DELAY_MS) {
                 // Eltelt a késleltetés → küldjük
                 let _ = Write::write_all(&mut writer, core::slice::from_ref(&data)).await;
                 CIRC_BUF.pop();
             } else {
                 // Még nem telt el → várunk a hátralévő időt
-                let remaining = Duration::from_millis(DELAY_MS) - elapsed;
+                let remaining = Duration::from_micros(DELAY_MS) - elapsed;
                 Timer::after(remaining).await;
             }
         } else {
             // Üres a buffer → kis szünet, hogy ne pörögjön feleslegesen
-            Timer::after(Duration::from_millis(1)).await;
+            Timer::after(Duration::from_micros(100)).await;
         }
     }
 }
-
-
 
 #[esp_rtos::main]
 async fn main(spawner: Spawner) {
@@ -209,6 +226,8 @@ async fn main(spawner: Spawner) {
         .into_async();
 
     let (uart_rx, uart_tx) = uart.split();
+    
+    let led = usb_uart_bridge::new_status_led();
 
     // Három task:
     // 1. USB → UART (eredeti)
@@ -217,4 +236,5 @@ async fn main(spawner: Spawner) {
     spawner.spawn(usb_to_uart_task(usb_rx, uart_tx).unwrap());
     spawner.spawn(uart_rx_task(uart_rx).unwrap());
     spawner.spawn(delayed_usb_tx_task(usb_tx).unwrap());
+    spawner.spawn(led_task(led).unwrap());
 }

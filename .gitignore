@@ -4,3 +4,4 @@ internal/
 .zed/
 esp32bridge/
 serialbridge/
+*_dump*.*
