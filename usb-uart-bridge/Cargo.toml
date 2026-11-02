@@ -12,6 +12,10 @@ path = "./src/bin/main.rs"
 name = "usb-uart-bridge-suppressor"
 path = "./src/bin/suppress.rs"
 
+[[bin]]
+name = "usb-uart-bridge-delayed"
+path = "./src/bin/delayed.rs"
+
 
 [dependencies]
 esp-hal = { version = "~1.2.2", features = ["esp32c3", "log-04", "unstable"] }
