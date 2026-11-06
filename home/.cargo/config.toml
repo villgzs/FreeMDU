@@ -9,14 +9,14 @@ PIN_LED_STATUS = "10"
 PIN_OPTICAL_RX = "0"
 PIN_OPTICAL_TX = "1"
 
-WIFI_SSID = ""
-WIFI_PASSWORD = ""
+WIFI_SSID = "andromatika"
+WIFI_PASSWORD = "wifiwifi"
 MQTT_HOSTNAME = ""
 MQTT_USERNAME = ""
 MQTT_PASSWORD = ""
 
 # Interval (in seconds) for publishing device properties and actions
-DEVICE_PUBLISH_INTERVAL = "60"
+DEVICE_PUBLISH_INTERVAL = "5"
 
 [target.'cfg(target_arch = "riscv32")']
 runner = "espflash flash --monitor"
