@@ -18,6 +18,7 @@ use esp_hal::{
 };
 use esp_println::logger;
 use log::{error, info};
+use heapless::String;
 
 esp_bootloader_esp_idf::esp_app_desc!();
 
@@ -79,7 +80,7 @@ pub fn new_optical_port<'a>(uart: impl Instance + 'a) -> Result<OpticalPort<'a>,
         OutputConfig::default(),
     );
     let cfg = Config::default()
-        .with_baudrate(57600)
+        .with_baudrate(115200)
         .with_parity(Parity::Even);
     let uart = Uart::new(uart, cfg)?
         .with_rx(rx.peripheral_input().with_input_inverter(true))
@@ -129,6 +130,7 @@ async fn main(spawner: Spawner) {
 
     let mut rx_buf = [0u8; 1];
     let mut line_buf = [0u8; 256];
+    let mut safe_buf = [0u8; 256];    
     let mut line_len = 0;
 
     // Enforce expected next character (None: accepts any valid character for the very first line)
@@ -146,6 +148,12 @@ async fn main(spawner: Spawner) {
 
                 if line_len < line_buf.len() {
                     line_buf[line_len] = byte;
+                    
+                    let mut corrected = byte;
+                    if byte>126 || byte<32 { 
+                        corrected = 32; 
+                    } 
+                    safe_buf[line_len] = corrected; 
                     line_len += 1;
                 } else {
                     line_len = 0;
@@ -159,6 +167,9 @@ async fn main(spawner: Spawner) {
                 {
                     let payload = &line_buf[..line_len - 2];
                     let text = core::str::from_utf8(payload).unwrap_or("");
+                    
+                    let payload = &safe_buf[..line_len - 2];                    
+                    let safe_text = core::str::from_utf8(payload).unwrap_or("");
 
                     // 1. Check basic ASCII range (32..=126)
                     // 1. Alapvető ASCII tartomány ellenőrzése (32..=126)
@@ -204,7 +215,7 @@ async fn main(spawner: Spawner) {
                     if is_valid_sequence {
                         info!("Received line: {text}");
                     } else {
-                        info!("Received line: {text}");
+                        info!("Received line: {safe_text}");
                         info!("Missing line or data line up to CR+LF contained an error.");
                     }
 
@@ -271,3 +282,19 @@ fn check_line_consistency(line: &str) -> Option<u8> {
         None
     }
 }
+
+// A payload-ból biztonságos, csak nyomtatható ASCII-t tartalmazó string készítése
+fn sanitize_for_log(payload: &[u8]) -> heapless::String<256> {
+    let mut s = heapless::String::new();
+    for &b in payload {
+        let c = if (32..=126).contains(&b) {
+            b as char
+        } else {
+            '.' // vagy '?' 
+        };
+        let _ = s.push(c);
+    }
+    s
+}
+
+

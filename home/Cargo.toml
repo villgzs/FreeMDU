@@ -38,6 +38,7 @@ freemdu = { path = "../protocol" }
 log = "0.4.29"
 mcutie = { version = "0.4.0", features = ["log"] }
 static_cell = "2.1.1"
+heapless = "0.8"
 
 [features]
 esp32c3 = [
