@@ -1,7 +1,7 @@
 # Circuit analysis
 2026-NOV-10
 
-The test results obtained with several operational amplifiers are presented in the figures below. The fundamental concept of the circuit is that the first amplifier stage operates as a transimpedance amplifier. The potentiometer connected to this stage allows adjustment of the SFH7250 receiver's operating point. Unlike the simplified version, where the operating point adjustment was limited, the 0.25 V restriction no longer applies, allowing the circuit to be tested over a wider operating range. Practical experience and measurement results indicate that the [previously estimated value of 0.25 V](https://github.com/villgzs/FreeMDU/tree/hardware/hardware/veroboard) is, nevertheless, very close to the optimal setting.
+The test results obtained with several operational amplifiers are presented in the figures below. The fundamental concept of the circuit is that the first amplifier stage operates as a transimpedance amplifier. The potentiometer connected to this stage allows adjustment of the SFH7250 receiver's operating point. Unlike the simplified version, where the operating point adjustment was limited, the 0.25 V restriction no longer applies, allowing the circuit to be tested over a wider operating range. Practical experience and measurement results indicate that the [previously estimated value of 0.25 V](https://github.com/villgzs/FreeMDU/blob/hardware/hardware/veroboard/README.md) is, nevertheless, very close to the optimal setting.
 
 [![TIA-circuit](tia-circuit_small.png)](https://raw.githubusercontent.com/villgzs/FreeMDU/refs/heads/hardware/hardware/circuit-analysis/tia-circuit.png)
 
