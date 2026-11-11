@@ -116,3 +116,9 @@ done
 
 echo "Kész! Az összes ág feldolgozva."
 ```
+
+Feltöltés: 
+
+```
+git push origin --all
+```
