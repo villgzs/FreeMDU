@@ -15,6 +15,11 @@ use esp_hal::{
     interrupt::software::SoftwareInterruptControl,
     timer::timg::TimerGroup,
     uart::{Config, ConfigError, Instance, IoError, Parity, Uart},
+    ledc::{
+        channel::{self, ChannelIFace},
+        timer::{self, TimerIFace},
+        LSGlobalClkSource, Ledc, LowSpeed,
+    },
 };
 use esp_println::logger;
 use log::{error, info};
@@ -80,7 +85,7 @@ pub fn new_optical_port<'a>(uart: impl Instance + 'a) -> Result<OpticalPort<'a>,
         OutputConfig::default(),
     );
     let cfg = Config::default()
-        .with_baudrate(115200)
+        .with_baudrate(9600)
         .with_parity(Parity::Even);
     let uart = Uart::new(uart, cfg)?
         .with_rx(rx.peripheral_input().with_input_inverter(true))
@@ -108,7 +113,9 @@ async fn main(spawner: Spawner) {
     esp_alloc::heap_allocator!(size: 32 * 1024);
 
     let peripherals = esp_hal::init(esp_hal::Config::default());
-
+    
+       
+     
     let timg0 = TimerGroup::new(peripherals.TIMG0);
     let sw_int = SoftwareInterruptControl::new(peripherals.SW_INTERRUPT);
     esp_rtos::start(timg0.timer0, sw_int.software_interrupt0);

@@ -95,7 +95,7 @@ pub fn new_optical_port<'a>(uart: impl Instance + 'a) -> Result<OpticalPort<'a>,
         OutputConfig::default(),
     );
     let cfg = Config::default()
-        .with_baudrate(2400)
+        .with_baudrate(115200)
         .with_parity(Parity::Even);
     let uart = Uart::new(uart, cfg)?
         .with_rx(rx.peripheral_input().with_input_inverter(true))
