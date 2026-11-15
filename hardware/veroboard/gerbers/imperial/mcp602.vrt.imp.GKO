@@ -1,0 +1,19 @@
+G04 Layer: BoardOutline *
+G04 VeroRoute V2.40 *
+G04 2026-11-15T14:06:18Z *
+G04 Gerber Generator version 1.1 *
+G04 Scale: 100 percent, Rotated: No, Reflected: No *
+G04 Dimensions in inches *
+G04 Leading zeros omitted, Absolute positions, 2 integer and 4 decimal *
+%MOIN*%
+%FSLAX24Y24*%
+%ADD10C,0.0100*%
+G01*
+%LPD*%
+D10*
+X0Y15004D02*
+X14004D01*
+Y0D01*
+X0D01*
+Y15004D01*
+M02*
