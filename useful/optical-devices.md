@@ -10,3 +10,8 @@ Higher speed with only receiver part
 with an LED
 
 [IR19-21C-TR8](https://www.tme.eu/Document/2bb6140c1d200a6ea61aee91221bfc86/IR19-21C-TR8.pdf)
+
+or
+
+[vsmy1850](https://www.vishay.com/docs/83397/vsmy1850.pdf)
+
