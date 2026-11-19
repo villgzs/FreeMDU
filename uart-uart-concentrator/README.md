@@ -1,5 +1,40 @@
 uart-uart-concentrator
 -------------------------------------------
+
+A legtöbbet a `send_byte` függvényen kell módosítani. Így néz ki a tömörebb változat:
+
+```rust
+/// Egy byte kiírása a host felé tömör formátumban
+fn send_byte(uart_id: u8, data: u8) {
+    if uart_id == 0 {
+        // UART0 → <AA
+        let _ = write!(std::io::stdout(), "<{:02X}", data);
+    } else {
+        // UART1 → >AA
+        let _ = write!(std::io::stdout(), ">{:02X}", data);
+    }
+    let _ = std::io::stdout().flush();
+}
+```
+
+### Teljes kimenet példa
+
+Ha pl. UART0-ról jön `0xA5`, majd UART1-ről `0x3C`, utána megint UART0-ról `0xFF`, akkor a host ezt fogja látni folyamatos streamként:
+
+```
+<A5>3C<FF
+```
+
+### Előnyök
+
+- Nagyon kevés adat megy az USB-n (3 karakter / byte helyett a korábbi ~8-10 helyett)
+- Nincs új sor → még kisebb overhead
+- A `<` és `>` jelek egyértelműen elválasztják az egyes byte-okat és jelzik a forrást is
+
+Szeretnéd, hogy a teljes `main.rs`-t is frissítsem ezzel a formátummal?
+
+---------------------------------------------
+---------------------------------------------
 Íme a javított verzió a kért architektúrával:
 
 - **Külön buffer** UART0-hoz és UART1-hez
