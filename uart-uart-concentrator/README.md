@@ -1,5 +1,236 @@
 uart-uart-concentrator
+-------------------------------------------
+Íme a javított verzió a kért architektúrával:
 
+- **Külön buffer** UART0-hoz és UART1-hez
+- A fogadó szálak **függetlenül** írnak a saját bufferükbe
+- A küldő folyamat mindkét buffert figyeli, és az **időbélyeg alapján** dönti el, hogy melyik byte-ot küldi el előbb
+
+```rust
+use anyhow::Result;
+use esp_idf_hal::delay::FreeRtos;
+use esp_idf_hal::gpio::AnyIOPin;
+use esp_idf_hal::peripherals::Peripherals;
+use esp_idf_hal::prelude::*;
+use esp_idf_hal::uart::{
+    config::{Config, DataBits, StopBits},
+    UartDriver,
+};
+use esp_idf_hal::units::Hertz;
+use esp_idf_sys::{self as _, esp_timer_get_time};
+use log::*;
+use std::collections::VecDeque;
+use std::io::Write;
+use std::sync::{Arc, Mutex};
+use std::thread;
+
+/// Egy beérkezett byte időbélyeggel
+#[derive(Debug, Clone, Copy)]
+struct TimedByte {
+    timestamp_us: i64, // mikrosekundum a boot óta
+    data: u8,
+}
+
+fn main() -> Result<()> {
+    esp_idf_sys::link_patches();
+    esp_idf_svc::log::EspLogger::initialize_default();
+
+    info!("ESP32-C3 dual UART → USB Serial/JTAG bridge (separate buffers)");
+
+    let peripherals = Peripherals::take().unwrap();
+    let pins = peripherals.pins;
+
+    // --- UART konfiguráció 9600 baud ---
+    let uart_config = Config::new()
+        .baudrate(Hertz(9600))
+        .data_bits(DataBits::DataBits8)
+        .parity_none()
+        .stop_bits(StopBits::STOP1);
+
+    // UART0 – normál
+    let uart0 = UartDriver::new(
+        peripherals.uart0,
+        pins.gpio21, // TX
+        pins.gpio20, // RX
+        Option::<AnyIOPin>::None,
+        Option::<AnyIOPin>::None,
+        &uart_config,
+    )?;
+
+    // UART1 – invertált RX
+    let mut uart1 = UartDriver::new(
+        peripherals.uart1,
+        pins.gpio4, // TX
+        pins.gpio5, // RX
+        Option::<AnyIOPin>::None,
+        Option::<AnyIOPin>::None,
+        &uart_config,
+    )?;
+    uart1.set_rx_invert(true)?;
+
+    info!("UART0 (normal) és UART1 (inverted RX) kész @ 9600 baud");
+
+    // Külön buffer a két UART-hoz
+    let buffer0: Arc<Mutex<VecDeque<TimedByte>>> =
+        Arc::new(Mutex::new(VecDeque::with_capacity(512)));
+    let buffer1: Arc<Mutex<VecDeque<TimedByte>>> =
+        Arc::new(Mutex::new(VecDeque::with_capacity(512)));
+
+    // UART0 fogadó szál
+    {
+        let buf = Arc::clone(&buffer0);
+        thread::Builder::new()
+            .name("uart0_rx".into())
+            .stack_size(4096)
+            .spawn(move || {
+                uart_receiver(uart0, buf);
+            })?;
+    }
+
+    // UART1 fogadó szál
+    {
+        let buf = Arc::clone(&buffer1);
+        thread::Builder::new()
+            .name("uart1_rx".into())
+            .stack_size(4096)
+            .spawn(move || {
+                uart_receiver(uart1, buf);
+            })?;
+    }
+
+    // Küldő szál – mindkét buffert figyeli
+    {
+        let b0 = Arc::clone(&buffer0);
+        let b1 = Arc::clone(&buffer1);
+        thread::Builder::new()
+            .name("usb_tx".into())
+            .stack_size(4096)
+            .spawn(move || {
+                usb_sender(b0, b1);
+            })?;
+    }
+
+    // Fő szál
+    loop {
+        FreeRtos::delay_ms(1000);
+    }
+}
+
+/// Egy UART-ról érkező byte-okat a saját bufferébe teszi
+fn uart_receiver(mut uart: UartDriver, buffer: Arc<Mutex<VecDeque<TimedByte>>>) {
+    let mut byte_buf = [0u8; 1];
+
+    loop {
+        match uart.read(&mut byte_buf, 50) {
+            // 50 ms timeout
+            Ok(1) => {
+                let ts = unsafe { esp_timer_get_time() };
+
+                let entry = TimedByte {
+                    timestamp_us: ts,
+                    data: byte_buf[0],
+                };
+
+                if let Ok(mut guard) = buffer.lock() {
+                    // Körkörös: ha megtelt, a legrégebbit dobjuk (bár nem várható)
+                    if guard.len() >= 512 {
+                        guard.pop_front();
+                    }
+                    guard.push_back(entry);
+                }
+            }
+            _ => {
+                // timeout vagy 0 byte – normális
+            }
+        }
+    }
+}
+
+/// Mindkét buffert figyeli, és az időbélyeg alapján dönti el a sorrendet
+fn usb_sender(
+    buffer0: Arc<Mutex<VecDeque<TimedByte>>>,
+    buffer1: Arc<Mutex<VecDeque<TimedByte>>>,
+) {
+    loop {
+        FreeRtos::delay_ms(2); // kis késleltetés a CPU teher csökkentésére
+
+        // Megnézzük a két buffer elejét
+        let front0 = {
+            let guard = buffer0.lock().unwrap();
+            guard.front().copied()
+        };
+        let front1 = {
+            let guard = buffer1.lock().unwrap();
+            guard.front().copied()
+        };
+
+        match (front0, front1) {
+            // Mindkét bufferben van adat
+            (Some(b0), Some(b1)) => {
+                if b0.timestamp_us <= b1.timestamp_us {
+                    // UART0 régebbi → azt küldjük
+                    if let Ok(mut guard) = buffer0.lock() {
+                        if let Some(item) = guard.pop_front() {
+                            send_byte(0, item.data);
+                        }
+                    }
+                } else {
+                    // UART1 régebbi
+                    if let Ok(mut guard) = buffer1.lock() {
+                        if let Some(item) = guard.pop_front() {
+                            send_byte(1, item.data);
+                        }
+                    }
+                }
+            }
+
+            // Csak UART0-ban van adat
+            (Some(_), None) => {
+                if let Ok(mut guard) = buffer0.lock() {
+                    if let Some(item) = guard.pop_front() {
+                        send_byte(0, item.data);
+                    }
+                }
+            }
+
+            // Csak UART1-ben van adat
+            (None, Some(_)) => {
+                if let Ok(mut guard) = buffer1.lock() {
+                    if let Some(item) = guard.pop_front() {
+                        send_byte(1, item.data);
+                    }
+                }
+            }
+
+            // Mindkettő üres
+            (None, None) => {
+                // semmi teendő
+            }
+        }
+    }
+}
+
+/// Egy byte kiírása a host felé a megadott formátumban
+fn send_byte(uart_id: u8, data: u8) {
+    let _ = writeln!(std::io::stdout(), "{}: 0x{:02X}", uart_id, data);
+    let _ = std::io::stdout().flush();
+}
+```
+
+### Működés röviden
+
+1. **UART0 szál** → csak a `buffer0`-ba ír  
+2. **UART1 szál** → csak a `buffer1`-be ír  
+3. **Küldő szál** folyamatosan nézi mindkét buffer elejét:
+   - Ha mindkettőben van adat → a **kisebb időbélyegű** megy előbb
+   - Ha csak az egyikben van → azt küldi
+   - Ha mindkettő üres → vár
+
+Ez pontosan megfelel a kért modellnek.
+
+
+----------------------------------------
+---------------------------
 Itt egy működő **Rust (esp-idf-hal)** megoldás ESP32-C3-ra, ami a UART0 és UART1 adatokat továbbítja a USB Serial/JTAG-ra, és előtaggal látja el őket (`0:` / `1:`).
 
 ### 1. `Cargo.toml`
