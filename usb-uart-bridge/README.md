@@ -1,8 +1,12 @@
+Version:
+
 Upload delayed forward brige with echo suppression by buffer:
 ```
 cargo run --release --bin usb-uart-bridge
 ```
 
+
+Faster way, but it has some problem. I think the host send the ACK in a short time and communication stops sometime.
 
 Upload local echo suppressor:
 ```

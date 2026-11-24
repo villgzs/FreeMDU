@@ -39,24 +39,26 @@ async fn try_speedup(path: &str) -> Result<(Interface<Port>, BaudRate), Box<dyn 
 //    println!("Software ID whithout timeout: {}", intf.query_software_id().await?);            
 
     println!("Trying to speed up...");
-    println!("~~~ FIRST QUERY ~~~");    
+    for i in 0..10 {
+        println!("~~~ QUERY {} ~~~", i + 1);
 
-    match timeout(
-        Duration::from_millis(100),
-        intf.query_software_id(),
-    )
-    .await
-    {
-        Ok(Ok(swid)) => {
-            println!("ID from timed query): {:?}", swid);
-            println!("0-Software ID: {}", intf.query_software_id().await?);            
-//            tokio::time::sleep(std::time::Duration::from_millis(100)).await;            
-        }
-        Ok(Err(err)) => {
-            println!("FreeMDU hiba: {:?}", err);
-        }
-        Err(_) => {
-            println!("1st timeout");
+        match timeout(
+            Duration::from_millis(100),
+            intf.query_software_id(),
+        )
+        .await
+        {
+            Ok(Ok(swid)) => {
+                println!("ID from timed query): {:?}", swid);
+                println!("0-Software ID: {}", intf.query_software_id().await?);
+                // tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+            }
+            Ok(Err(err)) => {
+                println!("FreeMDU hiba: {:?}", err);
+            }
+            Err(_) => {
+                println!("timeout");
+            }
         }
     }
 
@@ -101,7 +103,7 @@ async fn try_speedup(path: &str) -> Result<(Interface<Port>, BaudRate), Box<dyn 
         .await
         {
             Ok(Ok(())) => {
-                println!("Baudrate change to 19200 on device successfully.");
+                println!("Baudrate change to 9600 on device successfully.");
                 tokio::time::sleep(std::time::Duration::from_millis(200)).await;
                 println!("Tokio wait done.");
                 println!("3-Software ID: {}", intf.query_software_id().await?);            
@@ -183,8 +185,6 @@ async fn try_speedup(path: &str) -> Result<(Interface<Port>, BaudRate), Box<dyn 
             println!("Timeout: 10 ms alatt nem érkezett válasz.");            
         }
     }        
-
-
 
     println!("~~~ NORMAL UNLOCK ~~~");    
 

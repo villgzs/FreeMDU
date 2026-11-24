@@ -1,305 +1,3 @@
-cargo run --all-features --example find_keys
-cargo run --all-features --example find_keys
-cargo run --all-features --example find_keys
-cargo run --all-features --example find_keys
-cargo run --all-features --example find_keys
-cargo run --all-features --example find_keys
-cargo run --all-features --example speedyread
-cargo run --all-features --example find_keys
-cargo run --all-features --example speedyread
-cargo run --all-features --example find_keys
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example find_keys
-cargo run --all-features --example find_keys
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example find_keys
-cargo run --all-features --example find_keys
-cargo run --all-features --example find_keys
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-rm memory_dump.bin 
-cargo run --all-features --example speedyread
-rm memory_dump.bin 
-cargo run --all-features --example memory_dump
-cargo run --all-features --example dump_memory
-cargo run --all-features --example dump_memory
-cargo run --all-features --example dump_memory
-cargo run --all-features --example dump_memory
-rm memory_dump.bin 
-cargo run --all-features --example dump_memory
-rm memory_dump.bin 
-cargo run --all-features --example dump_memory
-rm memory_dump.bin 
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-rm memory_dump.bin 
-cargo run --all-features --example dump_memory
-cargo run --all-features --example dump_memory
-rm memory_dump.bin 
-cargo run --all-features --example speedyread
-rm memory_dump.bin 
-cargo run --all-features --example dump_memory
-cargo run --all-features --example dump_memory
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-rm memory_dump.bin 
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-rm memory_dump.bin 
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread19200
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-rm memory_dump.bin 
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-rm memory_dump.bin 
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-cargo run --all-features --example Martinius
-rm memory_dump.bin 
-cargo run --all-features --example Martinius
-rm memory_dump.bin 
-cargo run --all-features --example speedyread19200
-rm memory_dump.bin 
-cargo run --all-features --example speedyread19200
-rm memory_dump.bin 
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-cargo run --all-features --example speedyread
-rm memory_dump.bin 
-cargo run --all-features --example speedyread
-cd home/
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_bridge.sh 
-bash compile_c3_bridge.sh 9600
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_bridge.sh 
-bash compile_c3_bridge.sh 9600
-bash compile_c3_bridge.sh 
-bash compile_c3_bridge.sh 9600
-bash compile_c3_bridge.sh 
-bash compile_c3_bridge.sh 9600
-bash compile_c3_bridge.sh 
-bash compile_c3_bridge.sh 9600
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_bridge.sh 
-bash compile_c3_bridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_bridge.sh 
-bash compile_c3_bridge.sh 
-bash compile_c3_bridge.sh 
-bash compile_c3_bridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_bridge.sh 9600
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_bridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_bridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-bash compile_c3_pcbridge.sh 
-cd usb-uart-bridge/
-cargo run --release --bin usb-uart-bridge
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo clean
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
 cargo run --release --bin usb-uart-bridge-suppressor
 cargo run --release --bin usb-uart-bridge-suppressor
 cargo run --release --bin usb-uart-bridge-suppressor
@@ -498,3 +196,305 @@ cd usb-uart-bridge/
 cargo run --release --bin usb-uart-bridge-suppressor
 cargo run --release --bin usb-uart-bridge-suppressor
 cargo run --release --bin usb-uart-bridge-suppressor
+cd usb-uart-bridge/
+cargo run --release 
+cargo run --release --bin main
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-transparent bridge
+cargo run --release --bin usb-uart-transparent-bridge
+cargo run --release --bin usb-uart-bridge-delayed
+cargo run --release --bin usb-uart-bridge-suppressor
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge-suppressor
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cd ..
+cd home/
+bash compile_c3_bridge.sh 
+cd ..
+cd usb-uart-bridge/
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cargo run --release --bin usb-uart-bridge
+cd protocol/
+cd ..
+cd usb-uart-bridge/
+cargo run --release --bin usb-uart-bridge
+cd ..
+cd protocol/
+cargo run --all-features --example memoryread
+cd protocol/
+ls
+cargo run --all-features --example memoryread
+cd usb-uart-bridge/
+ls
+cat README.md 
+cargo run --release --bin usb-uart-bridge
+cd protocol/
+ls
+cat README.md 
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example findkeys
+cargo run --all-features --example find_keys
+cargo run --all-features --example find_keys
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread19200
+cargo run --all-features --example find_keys
+cargo run --all-features --example find_keys
+cargo run --all-features --example find_keys
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cd home/
+ls
+bash compile_c3_pcbridge.sh 
+bash compile_c3_bridge.sh 
+bash compile_c3_pcbridge.sh 
+bash compile_c3_pcbridge.sh 
+bash compile_c3_pcbridge.sh 
+bash compile_c3_pcbridge.sh 
+cd home/
+bash compile_c3_bridge.sh 
+cd ..
+ls
+ls -las
+cd serialbridge/
+ls -las
+cat README.md 
+cargo run
+ls -las src/
+cd ..
+ls
+cd usb-uart-bridge/
+ls 
+ls -las
+car README.md 
+cat README.md 
+cargo run --release --bin usb-uart-bridge
+cd protocol/
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example memory_read
+cargo run --all-features --example memoryread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example speedyread
+cargo run --all-features --example martinius
+cargo run --all-features --example Martinius
+cargo run --all-features --example Martinius
+cargo run --all-features --example Martinius
+s
+s
+ls
+rm memory_dump.bin
+cargo run --all-features --example Martinius
+cargo run --all-features --example speedyread
+cargo run --all-features --example Martinius
+cargo run --all-features --example Martinius

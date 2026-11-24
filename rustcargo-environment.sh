@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+echo "Version 0.2"
+
 # --- Docker check ---
 if ! command -v docker &>/dev/null; then
     echo "Warning: The Docker command was not found. Docker may not be installed, so please check your Docker installation."

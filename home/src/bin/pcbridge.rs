@@ -141,7 +141,7 @@ async fn bridge_task(
 
 	    // 3. Idle / baud logika (mindig lefut)
 	    // ...
-	    if ( last_activity.elapsed() >= IDLE_TIMEOUT ) 
+	    if ( last_activity.elapsed() >= IDLE_TIMEOUT && false ) 
 	            && ( state == BridgeState::LockedHiSpeed ) {
 //
 	            let _ = opt.flush().await;                        
@@ -162,7 +162,7 @@ async fn bridge_task(
 
 
 	    // Kis szünet, hogy ne pörögjön 100%-on
-	    embassy_time::Timer::after(Duration::from_micros(100)).await;                   
+	    embassy_time::Timer::after(Duration::from_micros(10)).await;                   
         
     }
 
