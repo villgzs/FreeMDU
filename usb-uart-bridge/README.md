@@ -1,6 +1,7 @@
 Version:
 
 Upload delayed forward brige with echo suppression by buffer:
+(100kHz output on pin 7; delayed forward; delayed backwards)
 ```
 cargo run --release --bin usb-uart-bridge
 ```

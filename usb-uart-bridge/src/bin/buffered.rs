@@ -16,8 +16,14 @@ use embedded_io_async::{Read, Write};
 use esp_hal::{
     timer::timg::TimerGroup,
     uart::{Config as UartConfig, Parity, Uart},
-    gpio::{Output},
+    gpio::{AnyPin, Output, DriveMode},
     gpio::interconnect::{InputSignal, OutputSignal,},
+    ledc::{
+        channel::{self, ChannelIFace},
+        timer::{self, TimerIFace},
+        LSGlobalClkSource, Ledc, LowSpeed,
+    },
+    time::Rate,
     usb::usb_serial_jtag::UsbSerialJtag,
     Async,
 };
@@ -208,6 +214,35 @@ async fn delayed_usb_tx_task(
 #[esp_rtos::main]
 async fn main(spawner: Spawner) {
     let peripherals = esp_hal::init(esp_hal::Config::default());
+    
+    // =====================================================
+    // 100 kHz, 50% duty PWM a GPIO7-en (LEDC)
+    // =====================================================
+    {
+        let mut ledc = Ledc::new(peripherals.LEDC);
+        ledc.set_global_slow_clock(LSGlobalClkSource::APBClk);
+
+        let mut lstimer0 = ledc.timer::<LowSpeed>(timer::Number::Timer0);
+        lstimer0
+            .configure(timer::config::Config {
+                duty: timer::config::Duty::Duty5Bit,
+                clock_source: timer::LSClockSource::APBClk,
+                frequency: Rate::from_hz(100_000),
+            })
+            .unwrap();
+
+        let mut channel0 = ledc.channel(
+            channel::Number::Channel0,
+            unsafe { AnyPin::steal(7) },
+        );
+        channel0
+            .configure(channel::config::Config {
+                timer: &lstimer0,
+                duty_pct: 50,
+                drive_mode: DriveMode::PushPull,
+            })
+            .unwrap();
+    }
 
     let timg0 = TimerGroup::new(peripherals.TIMG0);
     esp_rtos::start(timg0.timer0, peripherals.FROM_CPU_INTR0);
@@ -228,7 +263,7 @@ async fn main(spawner: Spawner) {
     let (uart_rx, uart_tx) = uart.split();
     
     let led = usb_uart_bridge::new_status_led();
-
+    
     // Három task:
     // 1. USB → UART (eredeti)
     // 2. UART → körkörös buffer (időbélyeggel)
