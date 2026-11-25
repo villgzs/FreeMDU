@@ -1,6 +1,6 @@
 Versions:
 
-Designed to measure the response time of an adapter connected to the ESP32-C3. It measures the elapsed time from sending on (0→1) and off (1→0) signals on the TX pin until they appear on the RX pin, and outputs the results to the jtagserial console. (Toggles TX every seconds.)
+Designed to measure the response time of an adapter connected to the ESP32-C3. It measures the elapsed time from sending on (0→1) and off (1→0) signals on the TX pin until they appear on the RX pin, and outputs the results to the jtagserial console. (Toggles TX every seconds, 100kHz on pin7 for chargepump)
 
 ```
 cargo run --release --bin reactiontime -- --monitor
