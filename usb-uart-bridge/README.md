@@ -7,7 +7,6 @@ cargo run --release --bin reactiontime -- --monitor
 ```
 
 Upload delayed forward brige with echo suppression by buffer:  
-
 (100kHz output on pin 7; delayed forward; delayed backwards)  
 ```
 cargo run --release --bin usb-uart-bridge
@@ -21,7 +20,7 @@ cargo run --release --bin usb-uart-bridge-suppressor
 
 Simple transparent bridge between UART1 and USBserialJTAG  
     There is a buffer for receiving data from UART1. Short delay before forward to USB.  
-    
+
 Upload local echo with delayed forward to USB port:  
 ```
 cargo run --release --bin usb-uart-bridge-delayed
