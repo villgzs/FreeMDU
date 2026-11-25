@@ -1,3 +1,5 @@
+[2026-NOV-25 : observed phenomenon (50us)](https://github.com/villgzs/FreeMDU/blob/useful/useful/2026nov24_filtered.png)
+
 [2026-NOV-16 : **Upgraded** circuit for transfer at 115200 baud](https://github.com/villgzs/FreeMDU/blob/hardware/hardware/veroboard/upgrade.md)
 
 # Circuit analysis
