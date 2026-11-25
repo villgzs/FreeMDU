@@ -127,14 +127,14 @@ async fn usb_tx_task(mut usb_tx: UsbSerialJtagTx<'static, Async>) -> ! {
 fn format_deltas(buf: &mut [u8; 24], on: u8, off: u8) -> &[u8] {
     let mut i = 0;
 
-    // "on:"
-    buf[i..i+3].copy_from_slice(b"on:");
-    i += 3;
+    // " on(us):"
+    buf[i..i+8].copy_from_slice(b" on(us):");
+    i += 8;
     i = write_u8(buf, i, on);
 
-    // " off:"
-    buf[i..i+5].copy_from_slice(b" off:");
-    i += 5;
+    // " off(us):"
+    buf[i..i+9].copy_from_slice(b" off(us):");
+    i += 9;
     i = write_u8(buf, i, off);
 
     // "\r\n"
