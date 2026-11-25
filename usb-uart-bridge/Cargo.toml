@@ -20,6 +20,10 @@ path = "./src/bin/delayed.rs"
 name = "usb-uart-bridge"
 path = "./src/bin/buffered.rs"
 
+[[bin]]
+name = "reactiontime"
+path = "./src/bin/reactiontime.rs"
+
 
 [dependencies]
 esp-hal = { version = "~1.2.2", features = ["esp32c3", "log-04", "unstable"] }

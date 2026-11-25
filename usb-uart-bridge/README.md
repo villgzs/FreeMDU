@@ -1,11 +1,16 @@
-Version:
+Versions:
+
+Designed to measure the response time of an adapter connected to the ESP32-C3. It measures the elapsed time from sending on (0→1) and off (1→0) signals on the TX pin until they appear on the RX pin, and outputs the results to the jtagserial console. (Toggles TX every seconds.)
+
+```
+cargo run --release --bin reactiontime -- --monitor
+```
 
 Upload delayed forward brige with echo suppression by buffer:
 (100kHz output on pin 7; delayed forward; delayed backwards)
 ```
 cargo run --release --bin usb-uart-bridge
 ```
-
 
 Faster way, but it has some problem. I think the host send the ACK in a short time and communication stops sometime.
 
