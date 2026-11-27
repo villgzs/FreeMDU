@@ -1,49 +1,3 @@
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cat src/bin/main.rs 
-cargo run --release --bin usb-uart-bridge-suppressor
-cd ../home/
-bash compile_c3_bridge.sh 
-cd usb-uart-bridge/
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cd ../home/
-bash compile_c3_bridge.sh 
-cd ../usb-uart-bridge/
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cargo run --release --bin usb-uart-bridge-suppressor
-cd home/
-bash compile_c3_bridge.sh 
-bash compile_c3_bridge.sh 
-cd protocol/
-cat README.md 
-cargo run --all-features --example find_key
-cargo run --all-features --example find_keys
-cargo run --all-features --example find_keys
-cargo run --all-features --example find_keys
-cargo run --all-features --example find_keys
 cargo run --all-features --example find_keys
 cargo run --all-features --example find_keys
 cargo run --all-features --example find_keys
@@ -498,3 +452,49 @@ cargo run --all-features --example Martinius
 cargo run --all-features --example speedyread
 cargo run --all-features --example Martinius
 cargo run --all-features --example Martinius
+cd /usr/src/myapp/home
+cd /usr/src/myapp/protocol
+cd /usr/src/myapp/tui
+compile_c3_automqtt.sh
+compile_c3_bridge.sh
+compile_c3_standalone.sh
+compile_c6_automqtt.sh
+compile_c6_bridge.sh
+compile_c6_standalone.sh
+cargo run --features esp32c3 --target riscv32imc-unknown-none-elf --release --bin asciisending
+cargo run --features esp32c3 --target riscv32imc-unknown-none-elf --release --bin checkforerror
+cargo run --features esp32c3 --target riscv32imc-unknown-none-elf --release --bin receiver
+cd usb-uart-bridge/
+ls
+cat README.md 
+cargo run --release --bin reactiontime -- --monitor
+cargo run --release --bin reactiontime -- --monitor
+ls -las
+cd /usr/src/myapp/home
+cd /usr/src/myapp/protocol
+cd /usr/src/myapp/tui
+compile_c3_automqtt.sh
+compile_c3_bridge.sh
+compile_c3_standalone.sh
+compile_c6_automqtt.sh
+compile_c6_bridge.sh
+compile_c6_standalone.sh
+cargo run --features esp32c3 --target riscv32imc-unknown-none-elf --release --bin asciisending
+cargo run --features esp32c3 --target riscv32imc-unknown-none-elf --release --bin checkforerror
+cargo run --features esp32c3 --target riscv32imc-unknown-none-elf --release --bin receiver
+ls -las
+cd /usr/src/myapp/home
+cd /usr/src/myapp/protocol
+cd /usr/src/myapp/tui
+compile_c3_automqtt.sh
+compile_c3_bridge.sh
+compile_c3_standalone.sh
+compile_c6_automqtt.sh
+compile_c6_bridge.sh
+compile_c6_standalone.sh
+cargo run --features esp32c3 --target riscv32imc-unknown-none-elf --release --bin asciisending
+cargo run --features esp32c3 --target riscv32imc-unknown-none-elf --release --bin checkforerror
+cargo run --features esp32c3 --target riscv32imc-unknown-none-elf --release --bin receiver
+ls -las
+cd usb-uart-bridge/
+cargo run --release --bin reactiontime -- --monitor

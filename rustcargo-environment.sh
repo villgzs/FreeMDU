@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "Version 0.2"
+echo "Version 0.3"
 
 # --- Docker check ---
 if ! command -v docker &>/dev/null; then
@@ -124,7 +124,11 @@ docker run -dit \
     --name "$CONTAINER_NAME" \
     --user "$(id -u):$(id -g)" \
     -e HOME="$WORKDIR" \
+    -e USER="$USER" \
+    -e LOGNAME="$USER" \
     --group-add $(getent group dialout | cut -d: -f3) \
+    -v /etc/passwd:/etc/passwd:ro \
+    -v /etc/group:/etc/group:ro \
     -v "$PWD":"$WORKDIR" \
     -w "$WORKDIR" \
     --device=/dev/ttyACM0 \
